@@ -1,4 +1,4 @@
-{% csrf_token %}
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +24,7 @@
       padding: 30px 10px;
     }
   </style>
-  <title>{{title}}</title>
+  <title>{{title}} {{content}}</title>
 
   </head>
   <body>
@@ -32,24 +32,26 @@
       <div class='row'>
         <div class='col mx-auto'>
           <h3>Form</h3>
-    <form class='new-content-form' method="POST" action='/some/url/link'>
+    <!-- <form class='new-content-form' method="POST" action='/some/url/link'>
       <textarea name='content' class='form-control'></textarea>
       <input type='submit' value='Save' />
+    </form> -->
+    <form method="POST">{{form}}
+      {% csrf_token %}
+      <button class="btn btn-default" type="submit">Submit</button>
     </form>
-    <p>{{content}}</p>
-    <form method="POST">{{form}}</form>
-    <form class="form-control">
+    <!-- <form class="form-control">
       <input type="text" name="Hello">
-    </form>
+    </form> -->
   </div>
 </div>
   </div>
 
-  <div class='formDataSubmitted'>
+  <!-- <div class='formDataSubmitted'>
 
 
   </div>
-
+ -->
 
 
 

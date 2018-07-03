@@ -1,10 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import ContactForm
+from .forms import ContactForm,LoginForm, RegisterForm
+from django.contrib.auth import authenticate, login, get_user_model
+from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.models import User
 
 def home_page(request):
   context = {
-  "title" : "Valar Morghulis"
+  "title" : "Valar Morghulis",
+  "Premium Content" : "Valar Dohaeris"
   }
   return render(request,"home_page.html",context)
 
@@ -12,13 +16,88 @@ def about_page(request):
   return render(request,"home_page.html",{})
 
 def contact_page(request):
-  contact_form = ContactForm()
+  contact_form = ContactForm(request.POST or None)
   content = {
   "title" : "Contact Us",
   "content" : "Valar Morghulis",
   "form" : contact_form
   }
+  if contact_form.is_valid():
+    print(contact_form.cleaned_data)
   return render(request,"contacts.html",content)
+
+# def login_page(request):
+#   login_form = LoginForm(request.POST or None)
+#   #print(request.user.is_authenticated())
+#   content = {
+#   "title" : "Login",
+#   "content" : "Valar Morghulis",
+#   "form" : login_form
+#   }
+#   if login_form.is_valid():
+#     print(login_form.cleaned_data)
+#     print(request.user.is_authenticated())
+#     username = login_form.cleaned_data.get("username")
+#     password = login_form.cleaned_data.get("password")
+#     user = authenticate(request, username = username,password = password)
+#     #print(username + password)
+#     print(user)
+#     if user is not None:
+#       login(request,user)
+#       print(request.user.is_authenticated())
+#       #content['form'] = LoginForm()
+#       return redirect("/login")
+#     print(request.user.is_authenticated())
+#   return(render(request,"auth/login.html",content))
+
+@csrf_protect
+def login_page(request):
+    form = LoginForm(request.POST or None)
+    context = {
+        "form": form
+    }
+    print("User logged in")
+    #print(request.user.is_authenticated())
+    if form.is_valid():
+        print(form.cleaned_data)
+        username  = form.cleaned_data["username"]
+        password  = form.cleaned_data["password"]
+        #print(username+password)
+        user = authenticate(username=username, password=password)
+        try:
+          assert user.is_active
+        except AttributeError as e:
+          pass
+        print(user)
+        #print(request.user.is_authenticated())
+        if user is not None:
+            print(request.user.is_authenticated())
+            login(request, user)
+            # Redirect to a success page.
+            #context['form'] = LoginForm()
+            return redirect("/")
+        else:
+            # Return an 'invalid login' error message.
+            print("Error")
+
+    return render(request, "auth/login.html", context)
+
+#User = get_user_model()
+def register_page(request):
+  register_form = RegisterForm(request.POST or None)
+  content = {
+  "title" : "Login",
+  "content" : "Valar Morghulis",
+  "form" : register_form
+  }
+  if register_form.is_valid():
+    print(register_form.cleaned_data)
+    username = register_form.cleaned_data['username']
+    email = register_form.cleaned_data['email']
+    password = register_form.cleaned_data['password']
+    user = User.objects.create_user(username,email,password)
+    print(user)
+  return(render(request,"auth/register.html",content))
 
 def home_page_old(request):
 	_html = """
