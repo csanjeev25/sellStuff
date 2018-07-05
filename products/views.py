@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from .models import Product
+from django.http import Http404
 
 # Create your views here.
 
@@ -32,11 +33,29 @@ class ProductDetailView(DetailView):
 		return context 
 
 
+def productDetailView(request,pk=None,*args,**kwargs):
+	# # # print(args)
+	# # # print(kwargs) 
+	# try:
+	# 	instance = Product.objects.get(pk=pk)
+	# except Product.DoesNotExist:
+	# 	# print("No Product Found")
+	# 	raise Http404("No Product Found ")
+	# except:
+	# 	print("HUh")
 
-def productDetailView(request):
+	queryset = Product.objects.filter(pk=pk)
+	if queryset.exists() and queryset.count() == 1:
+		instance = queryset.first()
+	else:
+		raise Http404("No Product Found ")
+
+	# instance = Product.objects.get(pk=pk)
+	# instance = get_object_or_404(Product,pk=pk)
 	context = {
-	'object_list' : Product.objects.all()
-	}
+	 'object' : instance
+	 }
 	return render(request,"products/detail.html",context)
+
 
 
