@@ -4,7 +4,7 @@ import os
 from django.db.models.signals import pre_save, post_save
 from .utils import unique_slug_generator
 from django.dispatch import receiver
-
+from django.urls import reverse
 
 def get_filename_ext(filepath):
 	base_name = os.path.basename(filepath)
@@ -25,7 +25,7 @@ class ProductQuerySet(models.query.QuerySet):
 		return self.filter(featured=True,active=True)
 
 	def active(self):
-		return self.filter(featured=True,active=False)
+		return self.filter(featured=True,active=True)
 
 class ProductManager(models.Manager):
 
@@ -66,7 +66,8 @@ class Product(models.Model):
 		return self.title
 
 	def get_absolute_url(self):
-		return "/products/{slug}/".format(slug=self.slug)
+		#return "/products/{slug}/".format(slug=self.slug)
+		return reverse("products:detail",kwargs={"slug":self.slug})
 
 def product_pre_save_receiver(sender, instance, *args, **kwargs):
     if not instance.slug:

@@ -24,12 +24,12 @@ from .views import (ProductListView,
     ProductFeaturedDetailView)
 
 urlpatterns = [
-    url(r'^$', ProductListView.as_view()),
+    url(r'^$', ProductListView.as_view(),name='list'),
     url(r'^featured/$', ProductFeaturedListView.as_view()),
     url(r'^featured/(?P<pk>\d+)/$', ProductFeaturedDetailView.as_view()),
     url(r'^-fbv/$', productListView),
     url(r'^(?P<pk>\d+)/$', ProductDetailView.as_view()),
     url(r'^-fbv/(?P<pk>\d+)/$', productDetailView),
-    url(r'^(?P<slug>[\w-]+)/$', ProductDetailSlugView.as_view()),
+    url(r'^(?P<slug>[\w-]+)/$', ProductDetailSlugView.as_view(),name='detail'),
 ]
 
