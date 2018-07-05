@@ -3,5 +3,5 @@
 <!-- {{context}} -->
 
 {% for obj in object_list %}
-<p>{{ obj.title}}</p>
+<a href="{{ obj.get_absolute_url }}"><p>{{ obj.title}}</p></a>
 {% endfor %}
